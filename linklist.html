@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Drag and Drop Train Carriages</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            text-align: center;
+            margin: 0; /* ลบค่าเริ่มต้นของ margin */
+            padding: 0; /* ลบค่าเริ่มต้นของ padding */
+        }
+        #toolbar {
+            margin: 15px auto;
+            padding: 15px;
+            background-color: #4a90e2;
+            border-radius: 8px;
+            width: fit-content;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        #toolbar button {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #4caf50;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+        }
+        #toolbar button:hover {
+            background-color: #45a049;
+        }
+        #train {
+            display: flex; /* ใช้ flexbox เพื่อเรียงโบกี้ในแนวนอน */
+            flex-wrap: nowrap; /* ห้ามโบกี้ขึ้นบรรทัดใหม่ */
+            margin: 20px auto;
+            padding: 20px;
+            border: 2px solid #333;
+            border-radius: 15px;
+            background-color: #fafafa;
+            min-height: 150px;
+            width: 100%; /* ปรับให้กว้างสุดจอ */
+            box-sizing: border-box; /* ป้องกันไม่ให้กรอบเกินขอบ */
+            overflow-x: auto; /* เพิ่ม scrollbar แนวนอนถ้าจำเป็น */
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .carriage {
+            display: inline-flex; /* ใช้ inline-flex เพื่อให้โบกี้เรียงในแนวนอน */
+            position: relative;
+            margin: 10px;
+            padding: 15px;
+            width: 120px; /* ความกว้างของโบกี้ */
+            height: 80px;
+            background: linear-gradient(145deg, #81c9f6, #3779a1);
+            border: 2px solid #4a90e2;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 20px; /* ขนาดฟอนต์ */
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3), inset -4px -4px 6px rgba(255, 255, 255, 0.5);
+            cursor: move;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            align-items: center; /* จัดให้อยู่กลางแนวตั้ง */
+            justify-content: center; /* จัดให้อยู่กลางแนวนอน */
+        }
+        .carriage:hover {
+            transform: scale(1.1);
+            box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.4), inset -6px -6px 8px rgba(255, 255, 255, 0.6);
+        }
+        .remove-btn {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: #ff5252;
+            color: #9c9c9c;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s;
+        }
+        .remove-btn:hover {
+            background-color: #e53935;
+        }
+    </style>
+</head>
+<body>
+
+<div id="toolbar">
+    <button onclick="addCarriage()">เพิ่มโบกี้</button>
+</div>
+<div id="train">
+    <!-- โบกี้รถไฟจะถูกเพิ่มที่นี่ -->
+</div>
+
+<script>
+    let carriageCount = 0;
+
+    function addCarriage() {
+        const train = document.getElementById('train');
+        
+        // รีเซ็ตตัวนับ `carriageCount` ถ้าไม่มีโบกี้เหลืออยู่
+        if (train.childElementCount === 0) {
+            carriageCount = 0;
+        }
+        
+        const carriage = document.createElement('div');
+        carriage.className = 'carriage';
+        carriage.draggable = true;
+        carriage.ondragstart = (e) => e.dataTransfer.setData('text/plain', carriage.id);
+
+        carriageCount++;
+        carriage.id = 'carriage-' + carriageCount;
+        carriage.innerText = 'โบกี้ ' + carriageCount;
+
+        const removeBtn = document.createElement('button');
+        removeBtn.className = 'remove-btn';
+        removeBtn.innerText = '×';
+        removeBtn.onclick = () => {
+            train.removeChild(carriage);
+            
+            // รีเซ็ตตัวนับถ้าไม่มีโบกี้เหลืออยู่
+            if (train.childElementCount === 0) {
+                carriageCount = 0;
+            }
+        };
+
+        carriage.appendChild(removeBtn);
+        train.appendChild(carriage);
+    }
+</script>
+
+</body>
+</html>
